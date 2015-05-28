@@ -1,47 +1,4 @@
 
-function load(arg, cb, where) {
-    cb = cb || function() {};
-    where = where || "head"
-
-    function load(url, callback) {
-        callback = callback || function() {};
-        var script = document.createElement("script")
-        script.type = "text/javascript";
-        if (script.readyState) {
-            script.onreadystatechange = function() {
-                if (script.readyState === "loaded" || script.readyState === "complete") {
-                    script.onreadystatechange = null;
-                    callback();
-                }
-            };
-        } else {
-            script.onload = function() {
-                callback();
-            };
-        }
-        script.src = url;
-        if      (where === "head")  {document.head.appendChild(script);}
-        else if (where === "body")  {document.body.appendChild(script);}
-        else                        {  
-            document.querySelector(where).appendChild(script);
-            // document.getElementsByTagName("head")[0].appendChild(script);
-        }
-    }
-    if (typeof arg === "string") {
-        load(arg, cb);
-    } else if (arg instanceof Array) {
-        var i = 0, l = arg.length;
-        function loadCallback() {
-            if (i >= l) {
-                cb();
-                return false;
-            }
-            load(arg[i], loadCallback);
-            i++;
-        }
-        loadCallback();
-    }
-}
 
 (function(window/*, document*/) {
     var document = document;// || window.document;
