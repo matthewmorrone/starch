@@ -7,7 +7,9 @@ function isArray(obj) {
 function isString(obj) {
   return obj.toString()=== '[object String]'
 }
-
+function isObject(obj) {
+  return obj.toString()=== '[object Object]'
+}
 function isNumber(value) {
   return !isNaN(Number(value))
 }
@@ -44,6 +46,9 @@ function isArguments(obj) {
 }
 
 
+Object.prototype.isString = function() {
+    return typeof this.constructor() === "string";
+}
 
 ['Array', 'Boolean', 'Date', 'Function', 'Number', 'String', 'RegExp'].each(function(type) {
   return Object.prototype.define("is" + type, function() {

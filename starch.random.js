@@ -1,3 +1,36 @@
+
+var rand = function(min, max, round, mt) {
+    if (arguments.length === 0) {
+        return Math.random();
+    }
+    if (!round) {
+        round = 1;
+    }
+    if (!max) {
+        var max = min;
+        min = 1;
+    }
+    if (max.isString()) {
+        max = max.charCodeAt(0);
+        min = min.charCodeAt(0);
+        return String.fromCharCode(Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+    if (mt) {
+        min = parseInt(min, 10);
+        max = parseInt(max, 10);
+    }
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+Math.rand = function(min, max, round, mt) {
+    return function() {
+        return rand(min, max, round, mt)
+    }
+}
+Math.rand(6, 9).repeat(3)
+Math.rand("A", "Z").repeat(3)
+
 var Random = function Random() {
   // return function() {
   //   return Math.random();

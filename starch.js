@@ -1,70 +1,162 @@
+var log = console.log.bind(console)
 
-function load(arg, cb) {
-    cb = cb || function() {};
+function Nihil() {}
+Nihil.prototype = Object.create(null)
 
-    function load(url, callback) {
-        callback = callback || function() {};
-        var script = document.createElement("script")
-        script.type = "text/javascript";
-        if (script.readyState) {
-            script.onreadystatechange = function() {
-                if (script.readyState === "loaded" || script.readyState === "complete") {
-                    script.onreadystatechange = null;
-                    callback();
+function isObject(object) {
+    var type = typeof object
+    return type === 'function' || type === 'object' && !!object
+}
+
+var nativeAlert = window.alert
+window.alert = function() {
+    return nativeAlert(arguments.join("\n"))
+}
+
+Object.defineProperty(Object.prototype, "define", {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: function(name, value) {
+        if (Object[name]) {
+            delete Object[name]
+        }
+        Object.defineProperty(this, name, {
+            configurable: true,
+            enumerable: false,
+            value: value
+        })
+        return this
+    }
+})
+Object.prototype.define("extend", function() {
+    function(src) {
+        var target = this
+        if (isObject(src)) {
+            for (var o in src) {
+                if (Object[src[o]]) {
+                    delete Object[src[o]]
                 }
-            };
-        } else {
-            script.onload = function() {
-                callback();
-            };
-        }
-        script.src = url;
-        document.head.appendChild(script);
-    }
-    if (typeof arg === "string") {
-        load(arg, cb);
-    } else if (arg instanceof Array) {
-        var i = 0, l = arg.length;
-        function loadCallback() {
-            if (i >= l) {
-                cb();
-                return false;
+                this.define(o, src[o])
             }
-            load(arg[i], loadCallback);
-            i++;
         }
-        loadCallback();
+        return this
     }
-}
-
-function loadScript(src, async) {
-    var script = document.createElement('script');
-    script.src = src;
-    script.type = 'text/javascript';
-    script.async = async || false;
-    document.head.appendChild(script);
-}
+})
 
 
-['starch.array.js',
- 'starch.canvas.js',
- 'starch.console.js',
- 'starch.element.js',
- 'starch.function.js',
- 'starch.is.js',
- 'starch.number.js',
- 'starch.object.js',
- 'starch.random.js',
- 'starch.range.js',
- 'starch.string.js',
- 'starch.utils.js',
- 'sugar.js'
-].forEach(function(src) {
-    var script = document.createElement('script');
-    script.src = src;
-    script.type = 'text/javascript';
-    script.async = false;
-    document.head.appendChild(script);
-});
+Object.prototype.extend({
+  "hasProperty": function(a) {
+    return Object.hasOwnProperty(this, a)
+  },
+  "getPropertyName": function(a) {
+    return Object.getOwnPropertyName(this, a)
+  },
+  "getPropertyNames": function() {
+    return Object.getOwnPropertyNames(this)
+  },
+  "getPropertyDescriptor": function(a) {
+    return Object.getOwnPropertyDescriptor(this, a)
+  },
+  "getPropertyDescriptors": function() {
+    var result = {}
+    Object.getOwnPropertyNames(this).each(function(a, b) {
+      result[a] = Object.getOwnPropertyDescriptor(this, a)
+    }, this)
+    return result
+  },
+  "each": function(f) {
+    for (var i in this) {
+      f && this.hasProperty(i) && f.call(this, this[i], i)
+    }
+    return this
+  },
+  "alert": function() {
+    return alert(this)
+  },
+  "toString": function() {
+    return Object.prototype.toString.call(this)
+  }
+})
+Object.prototype.define("forEach", function (callback, scope) {
+  var collection = this
+  if (Object.prototype.toString.call(collection) === '[object Object]') {
+    for (var prop in collection) {
+      if (Object.prototype.hasOwnProperty.call(collection, prop)) {
+        callback.call(scope, collection[prop], prop, collection)
+      }
+    }
+  } else {
+    for (var i = 0, len = collection.length; i < len; i++) {
+      callback.call(scope, collection[i], i, collection)
+    }
+  }
+})
 
-Object.extend() // sugar.js
+Object.define("setPrototypeOf", function(obj, proto) {
+  obj.__proto__ = proto
+  return obj
+})
+
+Object.prototype.define("map", function(fn, ctx) {
+  var ctx = ctx || this, self = this, result = {}
+  Object.keys(self).each(function(v, k) {
+    result[k] = fn.call(ctx, self[k], k, self)
+  })
+  return result
+})
+Object.prototype.define("log", function() {
+  return log(this)
+})
+
+Object.prototype.define("size", function() {
+  return this.length || Object.keys(this).length
+})
+Object.prototype.define("str", function() {
+  return JSON.stringify(this)
+})
+Object.prototype.define("toInt", function() {
+  return parseInt(this, (arguments[0] || 10))
+})
+Object.prototype.define("clone", function() {
+  return JSON.parse(JSON.stringify(this))
+})
+Object.prototype.define("values", function() {
+  var keys = Object.keys(this)
+  var ret = []
+  for (var i = 0; i < keys.length; i++) {
+    ret.push(this[keys[i]])
+  }
+  return ret
+})
+Object.prototype.define("setPrototypeOf", function(obj, proto) {
+  obj.__proto__ = proto
+  return obj
+})
+
+
+
+
+
+
+
+
+(function() {
+    var i, len, methods = Object.getOwnPropertyNames(Array.prototype)
+    for (i = 0, len = methods.length; i < len; i += 1) {
+        if (arguments.constructor.prototype.hasOwnProperty(methods[i]) === false) {
+            arguments.constructor.prototype.define(methods[i], Array.prototype[methods[i]])
+        }
+        if (NodeList.prototype.hasOwnProperty(methods[i]) === false) {
+            NodeList.prototype.define(methods[i], Array.prototype[methods[i]])
+        }
+    }
+}())
+
+
+
+
+
+
+
+
