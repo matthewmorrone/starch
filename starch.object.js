@@ -23,13 +23,15 @@ Object.prototype.extend({
       f && this.hasProperty(i) && f.call(this, this[i], i)
     }
     return this
-  },
-  "alert": function() {
-    return alert(this)
-  },
-  "toString": function() {
-    return Object.prototype.toString.call(this)
   }
+  // ,
+  // "alert": function() {
+  //   return alert(this)
+  // }
+  // ,
+  // "toString": function() {
+  //   return Object.prototype.toString.call(this)
+  // }
 })
 Object.prototype.define("forEach", function (callback, scope) {
   var collection = this

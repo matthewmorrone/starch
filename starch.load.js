@@ -1,4 +1,19 @@
 
+function loadScripts(paths, callback) {
+	var length = paths.length;
+	for (var i = 0, ii = length; i < ii; i++) {
+		var script = document.createElement('script');
+		script.async = false;
+		script.src = paths[i] + '.js';
+		script.onload = function() {
+			if (--length === 0) {
+				callback();
+			}
+		};
+		document.documentElement.appendChild(script);
+	}
+}
+
 function load(arg, cb) {
     cb = cb || function() {};
 

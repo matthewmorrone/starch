@@ -13,8 +13,9 @@ String.define("format", function(format) {
   })
 })
 String.prototype.define("format", function() {
+  var args = arguments;
   return this.replace(/{(\d+)}/g, function(match, number) {
-    return typeof arguments[number] != 'undefined' ? arguments[number] : match
+    return typeof args[number] != 'undefined' ? args[number] : match
   })
 })
 String.prototype.define("pad", function(n, char) {
