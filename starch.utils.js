@@ -30,17 +30,18 @@ Object.defineProperty(Object.prototype, "define", {
     }
 })
 Object.prototype.define("extend", function(src) {
-        var target = this
-        if (isObject(src)) {
-            for (var o in src) {
-                if (Object[src[o]]) {
-                    delete Object[src[o]]
-                }
-                this.define(o, src[o])
+    var target = this
+    if (isObject(src)) {
+        for (var o in src) {
+            if (Object[src[o]]) {
+                delete Object[src[o]]
             }
+            this.define(o, src[o])
         }
-        return this
+    }
+    return this
 })
+
 
 
 

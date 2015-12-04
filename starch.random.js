@@ -1,36 +1,3 @@
-
-var rand = function(min, max, round, mt) {
-    if (arguments.length === 0) {
-        return Math.random();
-    }
-    if (!round) {
-        round = 1;
-    }
-    if (!max) {
-        var max = min;
-        min = 1;
-    }
-    if (max.isString()) {
-        max = max.charCodeAt(0);
-        min = min.charCodeAt(0);
-        return String.fromCharCode(Math.floor(Math.random() * (max - min + 1)) + min);
-    }
-    if (mt) {
-        min = parseInt(min, 10);
-        max = parseInt(max, 10);
-    }
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
-Math.rand = function(min, max, round, mt) {
-    return function() {
-        return rand(min, max, round, mt)
-    }
-}
-Math.rand(6, 9).repeat(3)
-Math.rand("A", "Z").repeat(3)
-
 var Random = function Random() {
   // return function() {
   //   return Math.random();
@@ -169,7 +136,7 @@ Random.prototype.color = function() {
 Random.prototype.deterministic = (function() {
   var seed = 0x2F6E2B1;
   return function() {
-    // Robert Jenkins’ 32 bit integer hash function
+    // Robert Jenkinsâ€™ 32 bit integer hash function
     seed = ((seed + 0x7ED55D16) + (seed << 12))  & 0xFFFFFFFF;
     seed = ((seed ^ 0xC761C23C) ^ (seed >>> 19)) & 0xFFFFFFFF;
     seed = ((seed + 0x165667B1) + (seed << 5))   & 0xFFFFFFFF;

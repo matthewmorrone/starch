@@ -1,8 +1,4 @@
-Function.prototype.construct = function (aArgs) {
-  var oNew = Object.create(this.prototype);
-  this.apply(oNew, aArgs);
-  return oNew;
-};
+
 Function.prototype.define("repeat", function(n) {
   n = n || 2
   var m = 0, p = "", r = ""
